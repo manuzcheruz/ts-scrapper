@@ -35,66 +35,69 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var playwright_1 = require("playwright");
-var axios_1 = __importDefault(require("axios"));
-var getLinks_1 = __importDefault(require("./getLinks"));
-(function Scrapper() {
+function getLinks(links, page) {
     return __awaiter(this, void 0, void 0, function () {
-        var browser, context, page, searchPhrase, results, links, finalData, url, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, playwright_1.chromium.launch()];
+        var initialLinks, finalData, i, link, _a, _b, _c, start, title, storeUrl, description, ratings, data;
+        var _d;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    initialLinks = [];
+                    finalData = [];
+                    i = 0;
+                    _e.label = 1;
                 case 1:
-                    browser = _a.sent();
-                    return [4 /*yield*/, browser.newContext()];
+                    if (!(i < links.length)) return [3 /*break*/, 4];
+                    link = links[i];
+                    _b = (_a = initialLinks).push;
+                    _c = "https://www.amazon.co.uk";
+                    return [4 /*yield*/, link.getAttribute('href')];
                 case 2:
-                    context = _a.sent();
-                    return [4 /*yield*/, context.newPage()];
+                    _b.apply(_a, [_c + (_e.sent())]);
+                    _e.label = 3;
                 case 3:
-                    page = _a.sent();
-                    return [4 /*yield*/, page.goto('https://www.amazon.co.uk/', { timeout: 0 })];
+                    i++;
+                    return [3 /*break*/, 1];
                 case 4:
-                    _a.sent();
-                    searchPhrase = 'iphone 12';
-                    return [4 /*yield*/, page.fill('input[id="twotabsearchtextbox"]', searchPhrase)];
+                    if (!initialLinks.length) return [3 /*break*/, 15];
+                    start = initialLinks.shift();
+                    if (!start) return [3 /*break*/, 14];
+                    return [4 /*yield*/, page.goto(start, { timeout: 0 })];
                 case 5:
-                    _a.sent();
-                    return [4 /*yield*/, page.click('input[id="nav-search-submit-button"]', { timeout: 0 })];
+                    _e.sent();
+                    return [4 /*yield*/, page.$('h1[id="title"]')];
                 case 6:
-                    _a.sent();
-                    return [4 /*yield*/, page.waitForSelector('div[class="a-section a-spacing-small a-spacing-top-small"]')];
+                    title = _e.sent();
+                    return [4 /*yield*/, page.$('div[class="a-section a-spacing-none"]>a[id="bylineInfo"]')];
                 case 7:
-                    results = _a.sent();
-                    if (!results) return [3 /*break*/, 11];
-                    return [4 /*yield*/, page.$$('h2[class="a-size-mini a-spacing-none a-color-base s-line-clamp-2"]>a')];
+                    storeUrl = _e.sent();
+                    return [4 /*yield*/, page.$('div[id="feature-bullets"]')];
                 case 8:
-                    links = _a.sent();
-                    return [4 /*yield*/, getLinks_1.default(links, page)];
+                    description = _e.sent();
+                    return [4 /*yield*/, page.$('span[id="acrCustomerReviewText"]')];
                 case 9:
-                    finalData = _a.sent();
-                    url = 'https://car-rental-7028b-default-rtdb.firebaseio.com/amazon.json';
-                    return [4 /*yield*/, axios_1.default(url, {
-                            method: 'POST',
-                            headers: {
-                                'contents-type': 'application/json'
-                            },
-                            data: finalData
-                        })];
+                    ratings = _e.sent();
+                    _d = {};
+                    return [4 /*yield*/, (title === null || title === void 0 ? void 0 : title.innerText())];
                 case 10:
-                    response = _a.sent();
-                    if (response.status === 200) {
-                        console.log('success!!');
-                    }
-                    _a.label = 11;
-                case 11: return [4 /*yield*/, page.close()];
+                    _d.title = _e.sent();
+                    return [4 /*yield*/, (storeUrl === null || storeUrl === void 0 ? void 0 : storeUrl.innerText())];
+                case 11:
+                    _d.storeUrl = _e.sent();
+                    return [4 /*yield*/, (description === null || description === void 0 ? void 0 : description.innerText())];
                 case 12:
-                    _a.sent();
-                    return [2 /*return*/];
+                    _d.description = _e.sent();
+                    return [4 /*yield*/, (ratings === null || ratings === void 0 ? void 0 : ratings.innerText())];
+                case 13:
+                    data = (_d.ratings = _e.sent(),
+                        _d);
+                    finalData.push(data);
+                    _e.label = 14;
+                case 14: return [3 /*break*/, 4];
+                case 15: return [2 /*return*/, finalData];
             }
         });
     });
-})();
+}
+exports.default = getLinks;
