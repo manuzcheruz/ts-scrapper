@@ -52,7 +52,7 @@ import axios from 'axios';
             }
         }
 
-        const url = 'https://car-rental-7028b-default-rtdb.firebaseio.com/amazon.json';
+        const url = 'https://car-rental-7028b-default-rtdb.firebaseio.com/amazon.json'; //use your own db endpoint here!!
         const response = await axios(url, {
             method: 'POST',
             headers: {
